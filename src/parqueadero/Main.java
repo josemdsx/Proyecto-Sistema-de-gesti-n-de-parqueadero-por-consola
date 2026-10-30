@@ -153,9 +153,47 @@ public class Main {
         liquidar(celda, fechaIngreso, fechaSalida);
     }
 
-    static void liquidar(int c, LocalDateTime i, LocalDateTime s) {}
-    static long contarDiasCompletos(LocalDateTime i, LocalDateTime s) { return 0; }
-    static long calcularHorasRestantes(LocalDateTime c, LocalDateTime s) { return 0; }
+    static void liquidar(int celda, LocalDateTime ingreso, LocalDateTime salida) {
+        long diasACobrar = contarDiasCompletos(ingreso, salida);
+        LocalDateTime cursor = ingreso.plusDays(diasACobrar);
+        long horasACobrar = calcularHorasRestantes(cursor, salida);
+
+        if (horasACobrar >= UMBRAL_HORAS_DIA) {
+            diasACobrar++;
+            horasACobrar = 0;
+        }
+
+        String tipo = tiposVehiculo[celda];
+        double totalDia = (tipo.equals("carro") ? TARIFA_DIA_CARRO : TARIFA_DIA_MOTO) * diasACobrar;
+        double totalHora = (tipo.equals("carro") ? TARIFA_HORA_CARRO : TARIFA_HORA_MOTO) * horasACobrar;
+        double totalPagar = totalDia + totalHora;
+
+        if (tipo.equals("carro")) recaudoCarros += totalPagar;
+        else recaudoMotos += totalPagar;
+
+        imprimir("\n--- FACTURA DE SALIDA ---");
+        imprimir("Celda liberada: " + (celda + 1));
+        imprimir("Tipo de vehículo: " + tipo);
+        imprimir("Ingreso: " + ingreso.format(FORMATO_FECHA_HORA));
+        imprimir("Salida: " + salida.format(FORMATO_FECHA_HORA));
+        imprimir("Cobro por días completos (" + diasACobrar + "): $" + totalDia);
+        imprimir("Cobro por horas/fracción (" + horasACobrar + "): $" + totalHora);
+        imprimir("TOTAL A PAGAR: $" + totalPagar);
+        imprimir("-------------------------");
+
+        tiposVehiculo[celda] = null;
+        horasIngreso[celda] = null;
+    }
+
+    static long contarDiasCompletos(LocalDateTime ingreso, LocalDateTime salida) {
+        return ChronoUnit.DAYS.between(ingreso, salida);
+    }
+
+    static long calcularHorasRestantes(LocalDateTime cursor, LocalDateTime salida) {
+        long minutosRestantes = Duration.between(cursor, salida).toMinutes();
+        return (minutosRestantes + 59) / 60;
+    }
+
     static void reporteOcupacion() {}
     static void reporteFinanciero() {}
 }

@@ -36,7 +36,7 @@ public class Main {
 
             String opcion = SCANNER.nextLine().trim();
             switch (opcion) {
-                case "1": registrarEntrada(); break; // Opción 1 ya habilitada
+                case "1": registrarEntrada(); break;
                 case "2": // registrarSalida(); break;
                 case "3": // reporteOcupacion(); break;
                 case "4": // reporteFinanciero(); break;
@@ -53,7 +53,6 @@ public class Main {
 
     static void imprimir(String mensaje) { System.out.println(mensaje); }
 
-
     static void registrarEntrada() {
         int celda = obtenerCeldaDisponible();
         if (celda == -1) {
@@ -67,8 +66,13 @@ public class Main {
         imprimir("Vehículo registrado exitosamente en la celda " + (celda + 1));
     }
 
+    static int obtenerCeldaDisponible() {
+        for (int i = 0; i < CAPACIDAD_TOTAL; i++) {
+            if (tiposVehiculo[i] == null) return i;
+        }
+        return -1;
+    }
 
-    static int obtenerCeldaDisponible() { return -1; }
     static String validarTipoVehiculo() { return ""; }
     static LocalDateTime leerFechaHora(String msj) { return null; }
     static boolean formatoFechaHoraValido(String txt) { return false; }

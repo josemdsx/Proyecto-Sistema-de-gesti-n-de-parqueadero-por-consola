@@ -73,10 +73,59 @@ public class Main {
         return -1;
     }
 
-    static String validarTipoVehiculo() { return ""; }
-    static LocalDateTime leerFechaHora(String msj) { return null; }
-    static boolean formatoFechaHoraValido(String txt) { return false; }
-    static int leerDigitos(String txt, int ini, int cant) { return 0; }
+    static String validarTipoVehiculo() {
+        while (true) {
+            System.out.print("Ingrese tipo de vehículo (carro/moto): ");
+            String tipo = SCANNER.nextLine().trim().toLowerCase();
+            if (tipo.equals("carro") || tipo.equals("moto")) return tipo;
+            imprimir("Tipo inválido. Debe ser 'carro' o 'moto'.");
+        }
+    }
+
+    static LocalDateTime leerFechaHora(String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String texto = SCANNER.nextLine().trim();
+            if (!formatoFechaHoraValido(texto)) {
+                imprimir("Fecha u hora inválidas. Use yyyy-MM-dd HH:mm y el horario 08:00-22:00.");
+                continue;
+            }
+            try {
+                LocalDateTime fechaParseada = LocalDateTime.parse(texto, FORMATO_FECHA_HORA);
+                if (!fechaParseada.format(FORMATO_FECHA_HORA).equals(texto)) {
+                    imprimir("Fecha inexistente en el calendario. Intente de nuevo.");
+                    continue;
+                }
+                return fechaParseada;
+            } catch (Exception e) {
+                imprimir("Fecha inexistente en el calendario. Intente de nuevo.");
+            }
+        }
+    }
+
+    static boolean formatoFechaHoraValido(String texto) {
+        if (texto.length() != 16 || texto.charAt(4) != '-' || texto.charAt(7) != '-'
+                || texto.charAt(10) != ' ' || texto.charAt(13) != ':') return false;
+        int anio = leerDigitos(texto, 0, 4);
+        int mes = leerDigitos(texto, 5, 2);
+        int dia = leerDigitos(texto, 8, 2);
+        int hora = leerDigitos(texto, 11, 2);
+        int minuto = leerDigitos(texto, 14, 2);
+        return anio >= 1 && mes >= 1 && mes <= 12 && dia >= 1 && dia <= 31
+                && hora >= HORA_APERTURA && hora <= HORA_CIERRE
+                && (hora != HORA_CIERRE || minuto <= 0) && minuto >= 0 && minuto <= 59;
+    }
+
+    static int leerDigitos(String texto, int inicio, int cantidad) {
+        int valor = 0;
+        for (int i = inicio; i < inicio + cantidad; i++) {
+            char caracter = texto.charAt(i);
+            if (caracter < '0' || caracter > '9') return -1;
+            valor = valor * 10 + caracter - '0';
+        }
+        return valor;
+    }
+
     static void registrarSalida() {}
     static void liquidar(int c, LocalDateTime i, LocalDateTime s) {}
     static long contarDiasCompletos(LocalDateTime i, LocalDateTime s) { return 0; }

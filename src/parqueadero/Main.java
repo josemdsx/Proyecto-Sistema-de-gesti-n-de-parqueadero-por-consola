@@ -37,7 +37,7 @@ public class Main {
             String opcion = SCANNER.nextLine().trim();
             switch (opcion) {
                 case "1": registrarEntrada(); break;
-                case "2": // registrarSalida(); break;
+                case "2": registrarSalida(); break;
                 case "3": // reporteOcupacion(); break;
                 case "4": // reporteFinanciero(); break;
                 case "5":
@@ -126,7 +126,33 @@ public class Main {
         return valor;
     }
 
-    static void registrarSalida() {}
+    static void registrarSalida() {
+        System.out.print("Ingrese el número de celda a liberar (1-" + CAPACIDAD_TOTAL + "): ");
+        String celdaStr = SCANNER.nextLine().trim();
+        int celda;
+        try {
+            celda = Integer.parseInt(celdaStr) - 1;
+        } catch (NumberFormatException e) {
+            imprimir("Dato inválido. Debe ingresar un número entero.");
+            return;
+        }
+        if (celda < 0 || celda >= CAPACIDAD_TOTAL) {
+            imprimir("Posición inválida. Debe estar entre 1 y " + CAPACIDAD_TOTAL + ".");
+            return;
+        }
+        if (tiposVehiculo[celda] == null) {
+            imprimir("La celda indicada actualmente está vacía.");
+            return;
+        }
+        LocalDateTime fechaIngreso = horasIngreso[celda];
+        LocalDateTime fechaSalida = leerFechaHora("Ingrese fecha y hora de salida (yyyy-MM-dd HH:mm): ");
+        if (fechaSalida.isBefore(fechaIngreso)) {
+            imprimir("Error: La fecha y hora de salida no puede ser anterior al ingreso.");
+            return;
+        }
+        liquidar(celda, fechaIngreso, fechaSalida);
+    }
+
     static void liquidar(int c, LocalDateTime i, LocalDateTime s) {}
     static long contarDiasCompletos(LocalDateTime i, LocalDateTime s) { return 0; }
     static long calcularHorasRestantes(LocalDateTime c, LocalDateTime s) { return 0; }

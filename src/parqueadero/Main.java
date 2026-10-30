@@ -38,8 +38,8 @@ public class Main {
             switch (opcion) {
                 case "1": registrarEntrada(); break;
                 case "2": registrarSalida(); break;
-                case "3": // reporteOcupacion(); break;
-                case "4": // reporteFinanciero(); break;
+                case "3": reporteOcupacion(); break;
+                case "4": reporteFinanciero(); break;
                 case "5":
                     salir = true;
                     System.out.println("Cerrando sistema...");
@@ -194,6 +194,21 @@ public class Main {
         return (minutosRestantes + 59) / 60;
     }
 
-    static void reporteOcupacion() {}
-    static void reporteFinanciero() {}
+    static void reporteOcupacion() {
+        int ocupadas = 0;
+        for (String tipo : tiposVehiculo) {
+            if (tipo != null) ocupadas++;
+        }
+        int libres = CAPACIDAD_TOTAL - ocupadas;
+        imprimir("\n--- REPORTE DE OCUPACIÓN ---");
+        imprimir("Cantidad de celdas ocupadas: " + ocupadas);
+        imprimir("Cantidad de celdas libres: " + libres);
+    }
+
+    static void reporteFinanciero() {
+        imprimir("\n--- REPORTE FINANCIERO ---");
+        imprimir("Total recaudado por carros: $" + recaudoCarros);
+        imprimir("Total recaudado por motos: $" + recaudoMotos);
+        imprimir("Total general recaudado: $" + (recaudoCarros + recaudoMotos));
+    }
 }
